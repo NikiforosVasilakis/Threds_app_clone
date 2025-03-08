@@ -1,12 +1,5 @@
 "use client"
 
-import { useForm } from 'react-hook-form'
-import {zodResolver} from '@hookform/resolvers/zod'
-import { UserValidation } from '@/lib/validations/user';
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-
 import {
   Form,
   FormControl,
@@ -16,11 +9,22 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+
+import { useForm } from 'react-hook-form'
+import {zodResolver} from '@hookform/resolvers/zod'
+import { UserValidation } from '@/lib/validations/user';
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+
 import { array, z } from 'zod';
 import Image from 'next/image';
 import { ChangeEvent, useState } from 'react';
 import { useUploadThing } from '@/lib/uploadthing';
 import { isBase64Image } from '@/lib/utils';
+import { UpdateUser } from "@/lib/actions/user.actions";
+import { PathnameContext } from "next/dist/shared/lib/hooks-client-context.shared-runtime";
+import { usePathname, useRouter } from "next/navigation";
 
 
 interface Props{
@@ -39,6 +43,8 @@ interface Props{
 const AccountProfile = ({user, btnTitle}:Props) =>{
     const [files, setFiles] = useState<File[]>([])
     const { startUpload } = useUploadThing("media")
+    const Pathname = usePathname();
+    const router = useRouter();
 
     const form = useForm({
         resolver: zodResolver(UserValidation),
@@ -82,7 +88,25 @@ const AccountProfile = ({user, btnTitle}:Props) =>{
                 values.profile_photo = imgRes[0].url;
             }
         }
+        await UpdateUser({
+            userId
+            name
+            username
+            image
+            bio
+            path
+        })
+        {
+            user.id,
+            values.username,
+            values.profile_photo,
+            values.name,
+            values.bio,
+            Pathna me
+        }
     }
+
+
 
     return(
         <Form {...form}>
