@@ -1,5 +1,6 @@
 import AccountProfile from "@/components/forms/AccountProfile";
 
+
 import { currentUser } from "@clerk/nextjs/server";
 
 async function Page() {
@@ -27,7 +28,7 @@ async function Page() {
 
             <section className="mt-9 bg-dark-2 p-10">
                 <AccountProfile
-                    user={userData} 
+                    user = {userData} 
                     btnTitle="Continiue" 
                 />
 

@@ -39,23 +39,53 @@ interface Props{
     btnTitle: string;
 }
 
-
 const AccountProfile = ({user, btnTitle}:Props) =>{
-    const [files, setFiles] = useState<File[]>([])
     const { startUpload } = useUploadThing("media")
-    const Pathname = usePathname();
+    const pathname = usePathname();
     const router = useRouter();
+    
+    const [files, setFiles] = useState<File[]>([])
 
-    const form = useForm({
+    const form = useForm<z.infer<typeof UserValidation>>({
         resolver: zodResolver(UserValidation),
         defaultValues: {
-            profile_photo: user?.image || "",
-            name: user?.name || "",
-            username: user?.username || "",
-            bio: user?.bio || ""
-        }
+            profile_photo: user?.image ? user.image : "",
+            name: user?.name ? user.name : "",
+            username: user?.username ? user.username : "",
+            bio: user?.bio ? user.bio : "",
+          },
     }); 
 
+    
+    const onSubmit = async (values: z.infer <typeof UserValidation> ) => {
+        const blob = values.profile_photo;
+        
+        const hasImageChanged = isBase64Image(blob);
+        
+        if(hasImageChanged){
+            const imgRes = await startUpload(files)
+            
+            if(imgRes && imgRes[0].ufsUrl){
+                values.profile_photo = imgRes[0].ufsUrl;
+            }
+        }
+        
+        await UpdateUser({
+            userId: user.id,
+            name: values.name,
+            username: values.username,
+            image: values.profile_photo,
+            bio: values.bio,
+            path: pathname
+        })
+        
+        if(pathname === "/profile/edit"){
+            router.back()
+        }else{
+            router.push('/')
+        }
+    }
+    
     const handleImage = (e: ChangeEvent<HTMLInputElement >, fieldChange: (value: string)=>void) =>{
         e.preventDefault()
 
@@ -76,36 +106,6 @@ const AccountProfile = ({user, btnTitle}:Props) =>{
             fileReader.readAsDataURL(file);
         }
     };
-
-    const onSubmit = async (values: z.infer <typeof UserValidation> ) => {
-        const blob = values.profile_photo;
-
-        const hasImageChanged = isBase64Image(blob);
-
-           if(hasImageChanged){
-            const imgRes = await startUpload(files)
-            if(imgRes && imgRes[0].url){
-                values.profile_photo = imgRes[0].url;
-            }
-        }
-        await UpdateUser({
-            userId
-            name
-            username
-            image
-            bio
-            path
-        })
-        {
-            user.id,
-            values.username,
-            values.profile_photo,
-            values.name,
-            values.bio,
-            Pathna me
-        }
-    }
-
 
 
     return(
