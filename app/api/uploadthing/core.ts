@@ -1,4 +1,4 @@
-import { currentUser, User } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server"; // importing CurrentUser from Clerk
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 
@@ -23,7 +23,7 @@ export const ourFileRouter = {
     // Set permissions and file types for this FileRoute
     .middleware(async ({ req }) => {
       // This code runs on your server before upload
-      const user = await getUser();
+      const user = await getUser(); //Awaiting User From Clerk
       // If you throw, the user will not be able to upload
       if (!user) throw new UploadThingError("Unauthorized");
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
