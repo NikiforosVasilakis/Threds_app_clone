@@ -44,7 +44,7 @@ const AccountProfile = ({user, btnTitle}:Props) =>{
     const pathname = usePathname();
     const router = useRouter();
     
-    const [files, setFiles] = useState<File[]>([])
+    const [files, setFiles] = useState<File[]>([]);
 
     const form = useForm<z.infer<typeof UserValidation>>({
         resolver: zodResolver(UserValidation),
@@ -79,14 +79,16 @@ const AccountProfile = ({user, btnTitle}:Props) =>{
             path: pathname
         })
         
+        
+        /* CHANGE LATER
         if(pathname === "/profile/edit"){
             router.back()
         }else{
             router.push('/')
         }
+        */
     }
-    
-    const handleImage = (e: ChangeEvent<HTMLInputElement >, fieldChange: (value: string)=>void) =>{
+        const handleImage = (e: ChangeEvent<HTMLInputElement >, fieldChange: (value: string)=>void) =>{
         e.preventDefault()
 
         const fileReader = new FileReader();
